@@ -1,1 +1,1 @@
-export const ResizeObserver = window.ResizeObserver
+export * as psp from '../../perspective.js'
