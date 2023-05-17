@@ -1,5 +1,4 @@
 import React from "react";
-import "@finos/perspective-viewer/dist/css/themes.css";
 import type { HTMLPerspectiveViewerElement } from "@finos/perspective-viewer";
 
 export default function Home() {
