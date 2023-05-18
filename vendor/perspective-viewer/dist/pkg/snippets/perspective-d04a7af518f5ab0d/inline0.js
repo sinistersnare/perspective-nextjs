@@ -1,1 +1,1 @@
-export const ClipboardItem = window.ClipboardItem
+export * as psp from '../../perspective.js'

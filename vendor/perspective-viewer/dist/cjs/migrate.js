@@ -1,2 +1,428 @@
-var c=Object.defineProperty;var _=Object.getOwnPropertyDescriptor;var l=Object.getOwnPropertyNames;var p=Object.prototype.hasOwnProperty;var g=(e,n)=>{for(var t in n)c(e,t,{get:n[t],enumerable:!0})},m=(e,n,t,r)=>{if(n&&typeof n=="object"||typeof n=="function")for(let i of l(n))!p.call(e,i)&&i!==t&&c(e,i,{get:()=>n[i],enumerable:!(r=_(n,i))||r.enumerable});return e};var b=e=>m(c({},"__esModule",{value:!0}),e);var E={};g(E,{convert:()=>d});module.exports=b(E);function d(e,{warn:n=!0,replace_defaults:t=!1}={}){if(typeof e=="object"&&!(e instanceof ArrayBuffer)){let r=JSON.parse(JSON.stringify(e));return"viewers"in r&&"detail"in r?w(r,{warn:n,replace_defaults:t}):f(r,!1,{warn:n,replace_defaults:t})}else return e}function w(e,n){for(let t in e.viewers)e.viewers[t]=f(e.viewers[t],!0,n),"master"in e.viewers[t]||(e.viewers[t].master=!1,n.warn&&console.warn('Deprecated perspective missing attribute "master" set to default')),"linked"in e.viewers[t]||(e.viewers[t].linked=!1,n.warn&&console.warn('Deprecated perspective missing attribute "linked" set to default'));return e}function f(e,n,t){return v(e,[k,D,$,h,t.replace_defaults?y:!1,A,B,S,X,n?T:x].filter(r=>!!r),t)}function v(e,n,t){for(let r of n)e=r(e,t);return e}function y(e,n){for(let t of["group_by","split_by","filter","sort"])e[t]===null&&(e[t]=[],n.warn&&console.warn(`Deprecated perspective missing attribute "${t}" set to default"`)),"aggregates"in e&&e.aggregates===null&&(e.aggregates={},n.warn&&console.warn('Deprecated perspective missing attribute "aggregates" set to default"'));return e}function s(e,n){return function(t,r){let i=0;for(let o of n)if(o in t){if(i++>0)throw new Error(`Duplicate "${e}" fields`);t[e]=t[o],o!==e&&(delete t[o],r.warn&&console.warn(`Deprecated perspective attribute "${o}" renamed "${e}"`))}return t}}var k=s("group_by",["group_by","row_pivots","row-pivot","row-pivots","row_pivot"]),D=s("split_by",["split_by","column_pivots","column-pivot","column-pivots","column_pivot","col_pivots","col-pivot","col-pivots","col_pivot"]),$=s("filter",["filter","filters"]);function Y(e,n,t,r,i){if(e.test(t)){let o=t.replace(e,n);i.warn&&console.warn(`Deprecated perspective "expression" attribute value "${t}" updated to "${o}"`);for(let a of["group_by","split_by"])if(a in r)for(let u in r[a])r[a][u]===t.replace(/"/g,"")&&(r[a][u]=o,i.warn&&console.warn(`Deprecated perspective expression in "${a}" attribute "${t}" replaced with "${o}"`));for(let a of r.filter||[])a[0]===t.replace(/"/g,"")&&(a[0]=o,i.warn&&console.warn(`Deprecated perspective expression in "filter" attribute "${t}" replaced with "${o}"`));for(let a of r.sort||[])a[0]===t.replace(/"/g,"")&&(a[0]=o,i.warn&&console.warn(`Deprecated perspective expression in "sort" attribute "${t}" replaced with "${o}"`));return o}else return t}function S(e){return e.title===void 0&&(e.title=null),e}function h(e,n){if(e["computed-columns"]){if("expressions"in e)throw new Error('Duplicate "expressions" and "computed-columns');e.expressions=e["computed-columns"],delete e["computed-columns"],n.warn&&console.warn('Deprecated perspective attribute "computed-columns" renamed "expressions"');let t=[[/^year_bucket\("(.+?)"\)/,`bucket("$1", 'y')`],[/^month_bucket\("(.+?)"\)/,`bucket("$1", 'M')`],[/^day_bucket\("(.+?)"\)/,`bucket("$1", 'd')`],[/^hour_bucket\("(.+?)"\)/,`bucket("$1", 'h')`],[/^minute_bucket\("(.+?)"\)/,`bucket("$1", 'm')`],[/^second_bucket\("(.+?)"\)/,`bucket("$1", 's')`]];for(let r in e.expressions){let i=e.expressions[r];for(let[o,a]of t)i=Y(o,a,i,e,n);e.expressions[r]=i}}return e}function A(e,n){let t={datagrid:"Datagrid",Datagrid:"Datagrid",d3_y_area:"Y Area","Y Area":"Y Area",d3_y_line:"Y Line","Y Line":"Y Line",d3_xy_line:"X/Y Line","X/Y Line":"X/Y Line",d3_y_scatter:"Y Scatter","Y Scatter":"Y Scatter",d3_xy_scatter:"X/Y Scatter","X/Y Scatter":"X/Y Scatter",d3_x_bar:"X Bar","X Bar":"X Bar",d3_y_bar:"Y Bar","Y Bar":"Y Bar",d3_heatmap:"Heatmap",Heatmap:"Heatmap",d3_treemap:"Treemap",Treemap:"Treemap",d3_sunburst:"Sunburst",Sunburst:"Sunburst"};return"plugin"in e&&e.plugin!==t[e.plugin]&&(e.plugin=t[e.plugin],n.warn&&console.warn(`Deprecated perspective "plugin" attribute value "${e.plugin}" updated to "${t[e.plugin]}"`)),e}function B(e,n){if(e.plugin==="Datagrid"&&!!e.plugin_config){if(!e.plugin_config.columns){n.warn&&console.warn('Deprecated perspective attribute "plugin_config" moved to "plugin_config.columns"');let t={};for(let r of Object.keys(e.plugin_config)){let i=e.plugin_config[r];delete e.plugin_config[r],typeof i.color_mode=="string"&&(i.color_mode==="foreground"?i.number_fg_mode="color":i.color_mode==="bar"?i.number_fg_mode="bar":i.color_mode==="background"?i.number_bg_mode="color":i.color_mode==="gradient"?i.number_bg_mode="gradient":console.warn(`Unknown color_mode ${i.color_mode}`),delete i.color_mode,n.warn&&console.warn('Deprecated perspective attribute "color_mode" renamed "number_bg_mode"')),t[r]=i}e.plugin_config.columns=t,n.replace_defaults&&(e.plugin_config.editable=!1,e.plugin_config.scroll_lock=!0)}for(let t of Object.keys(e.plugin_config.columns)){let r=e.plugin_config.columns[t];typeof r.number_color_mode=="string"&&(r.number_color_mode==="foreground"?r.number_fg_mode="color":r.number_color_mode==="bar"?r.number_fg_mode="bar":r.number_color_mode==="background"?r.number_bg_mode="color":r.number_color_mode==="gradient"&&(r.number_bg_mode="gradient"),delete r.number_color_mode,n.warn&&console.warn('Deprecated perspective attribute "number_color_mode" renamed "number_bg_mode"')),r.gradient!==void 0&&(r.number_bg_mode==="gradient"?r.bg_gradient=r.gradient:r.number_fg_mode==="bar"&&(r.fg_gradient=r.gradient),delete r.gradient,n.warn&&console.warn('Deprecated perspective attribute "gradient" renamed "bg_gradient"')),r.pos_color!==void 0&&(r.number_bg_mode!==void 0?r.pos_bg_color=r.pos_color:r.number_fg_mode!==void 0&&(r.pos_fg_color=r.pos_color),delete r.pos_color,n.warn&&console.warn('Deprecated perspective attribute "pos_color" renamed "pos_bg_color"')),r.neg_color!==void 0&&(r.number_bg_mode!==void 0?r.neg_bg_color=r.neg_color:r.number_fg_mode!==void 0&&(r.neg_fg_color=r.neg_color),delete r.neg_color,n.warn&&console.warn('Deprecated perspective attribute "neg_color" renamed "neg_bg_color"'))}}return e}function x(e,n){let t=["editable","selectable","name","table","master","linked"];for(let r of t)r in e&&(delete e[r],n.warn&&console.warn(`Deprecated perspective attribute "${r}" removed`));return e}function T(e,n){let t=["editable","selectable","name","table","master","linked"];for(let r of t)r in e&&e[r]===null&&(delete e[r],n.warn&&console.warn(`Deprecated perspective attribute "${r}" removed`));return e}function X(e,n){return"name"in e&&("title"in e&&e.title!==void 0&&(e.title=e.name,n.warn&&console.warn('"name" conflicts with "title"')),delete e.name,n.warn&&console.warn('"name" unified with "title"')),e}
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/ts/migrate.ts
+var migrate_exports = {};
+__export(migrate_exports, {
+  convert: () => convert
+});
+module.exports = __toCommonJS(migrate_exports);
+function convert(old, { warn = true, replace_defaults = false } = {}) {
+  if (typeof old === "object" && !(old instanceof ArrayBuffer)) {
+    const copy = JSON.parse(JSON.stringify(old));
+    if ("viewers" in copy && "detail" in copy) {
+      return migrate_workspace(copy, { warn, replace_defaults });
+    } else {
+      return migrate_viewer(copy, false, { warn, replace_defaults });
+    }
+  } else {
+    return old;
+  }
+}
+function migrate_workspace(old, options) {
+  for (const key in old.viewers) {
+    old.viewers[key] = migrate_viewer(old.viewers[key], true, options);
+    if (!("master" in old.viewers[key])) {
+      old.viewers[key].master = false;
+      if (options.warn) {
+        console.warn(
+          `Deprecated perspective missing attribute "master" set to default`
+        );
+      }
+    }
+    if (!("linked" in old.viewers[key])) {
+      old.viewers[key].linked = false;
+      if (options.warn) {
+        console.warn(
+          `Deprecated perspective missing attribute "linked" set to default`
+        );
+      }
+    }
+  }
+  return old;
+}
+function migrate_viewer(old, omit_attributes, options) {
+  return chain(
+    old,
+    [
+      migrate_group_by,
+      migrate_split_by,
+      migrate_filters,
+      migrate_expressions,
+      options.replace_defaults ? migrate_nulls : false,
+      migrate_plugins,
+      migrate_plugin_config,
+      migrate_title,
+      migrate_name_title_workspace,
+      omit_attributes ? migrate_attributes_workspace : migrate_attributes_viewer
+    ].filter((x) => !!x),
+    options
+  );
+}
+function chain(old, args, options) {
+  for (const arg of args) {
+    old = arg(old, options);
+  }
+  return old;
+}
+function migrate_nulls(old, options) {
+  for (const key of ["group_by", "split_by", "filter", "sort"]) {
+    if (old[key] === null) {
+      old[key] = [];
+      if (options.warn) {
+        console.warn(
+          `Deprecated perspective missing attribute "${key}" set to default"`
+        );
+      }
+    }
+    if ("aggregates" in old && old.aggregates === null) {
+      old.aggregates = {};
+      if (options.warn) {
+        console.warn(
+          `Deprecated perspective missing attribute "aggregates" set to default"`
+        );
+      }
+    }
+  }
+  return old;
+}
+function _migrate_field_aliases(original, aliases) {
+  return function(old, options) {
+    let count = 0;
+    for (const pivot of aliases) {
+      if (pivot in old) {
+        if (count++ > 0) {
+          throw new Error(`Duplicate "${original}" fields`);
+        }
+        old[original] = old[pivot];
+        if (pivot !== original) {
+          delete old[pivot];
+          if (options.warn) {
+            console.warn(
+              `Deprecated perspective attribute "${pivot}" renamed "${original}"`
+            );
+          }
+        }
+      }
+    }
+    return old;
+  };
+}
+var migrate_group_by = _migrate_field_aliases("group_by", [
+  "group_by",
+  "row_pivots",
+  "row-pivot",
+  "row-pivots",
+  "row_pivot"
+]);
+var migrate_split_by = _migrate_field_aliases("split_by", [
+  "split_by",
+  "column_pivots",
+  "column-pivot",
+  "column-pivots",
+  "column_pivot",
+  "col_pivots",
+  "col-pivot",
+  "col-pivots",
+  "col_pivot"
+]);
+var migrate_filters = _migrate_field_aliases("filter", ["filter", "filters"]);
+function _migrate_expression(regex1, rep, expression, old, options) {
+  if (regex1.test(expression)) {
+    const replaced = expression.replace(regex1, rep);
+    if (options.warn) {
+      console.warn(
+        `Deprecated perspective "expression" attribute value "${expression}" updated to "${replaced}"`
+      );
+    }
+    for (const key of ["group_by", "split_by"]) {
+      if (key in old) {
+        for (const idx in old[key]) {
+          const pivot = old[key][idx];
+          if (pivot === expression.replace(/"/g, "")) {
+            old[key][idx] = replaced;
+            if (options.warn) {
+              console.warn(
+                `Deprecated perspective expression in "${key}" attribute "${expression}" replaced with "${replaced}"`
+              );
+            }
+          }
+        }
+      }
+    }
+    for (const filter of old.filter || []) {
+      if (filter[0] === expression.replace(/"/g, "")) {
+        filter[0] = replaced;
+        if (options.warn) {
+          console.warn(
+            `Deprecated perspective expression in "filter" attribute "${expression}" replaced with "${replaced}"`
+          );
+        }
+      }
+    }
+    for (const sort of old.sort || []) {
+      if (sort[0] === expression.replace(/"/g, "")) {
+        sort[0] = replaced;
+        if (options.warn) {
+          console.warn(
+            `Deprecated perspective expression in "sort" attribute "${expression}" replaced with "${replaced}"`
+          );
+        }
+      }
+    }
+    return replaced;
+  } else {
+    return expression;
+  }
+}
+function migrate_title(old) {
+  if (old["title"] === void 0) {
+    old.title = null;
+  }
+  return old;
+}
+function migrate_expressions(old, options) {
+  if (old["computed-columns"]) {
+    if ("expressions" in old) {
+      throw new Error(`Duplicate "expressions" and "computed-columns`);
+    }
+    old.expressions = old["computed-columns"];
+    delete old["computed-columns"];
+    if (options.warn) {
+      console.warn(
+        `Deprecated perspective attribute "computed-columns" renamed "expressions"`
+      );
+    }
+    const REPLACEMENTS = [
+      [/^year_bucket\("(.+?)"\)/, `bucket("$1", 'y')`],
+      [/^month_bucket\("(.+?)"\)/, `bucket("$1", 'M')`],
+      [/^day_bucket\("(.+?)"\)/, `bucket("$1", 'd')`],
+      [/^hour_bucket\("(.+?)"\)/, `bucket("$1", 'h')`],
+      [/^minute_bucket\("(.+?)"\)/, `bucket("$1", 'm')`],
+      [/^second_bucket\("(.+?)"\)/, `bucket("$1", 's')`]
+    ];
+    for (const idx in old.expressions) {
+      let expression = old.expressions[idx];
+      for (const [a, b] of REPLACEMENTS) {
+        expression = _migrate_expression(
+          a,
+          b,
+          expression,
+          old,
+          options
+        );
+      }
+      old.expressions[idx] = expression;
+    }
+  }
+  return old;
+}
+function migrate_plugins(old, options) {
+  const ALIASES = {
+    datagrid: "Datagrid",
+    Datagrid: "Datagrid",
+    d3_y_area: "Y Area",
+    "Y Area": "Y Area",
+    d3_y_line: "Y Line",
+    "Y Line": "Y Line",
+    d3_xy_line: "X/Y Line",
+    "X/Y Line": "X/Y Line",
+    d3_y_scatter: "Y Scatter",
+    "Y Scatter": "Y Scatter",
+    d3_xy_scatter: "X/Y Scatter",
+    "X/Y Scatter": "X/Y Scatter",
+    d3_x_bar: "X Bar",
+    "X Bar": "X Bar",
+    d3_y_bar: "Y Bar",
+    "Y Bar": "Y Bar",
+    d3_heatmap: "Heatmap",
+    Heatmap: "Heatmap",
+    d3_treemap: "Treemap",
+    Treemap: "Treemap",
+    d3_sunburst: "Sunburst",
+    Sunburst: "Sunburst"
+  };
+  if ("plugin" in old && old.plugin !== ALIASES[old.plugin]) {
+    old.plugin = ALIASES[old.plugin];
+    if (options.warn) {
+      console.warn(
+        `Deprecated perspective "plugin" attribute value "${old.plugin}" updated to "${ALIASES[old.plugin]}"`
+      );
+    }
+  }
+  return old;
+}
+function migrate_plugin_config(old, options) {
+  if (old.plugin === "Datagrid" && !!old.plugin_config) {
+    if (!old.plugin_config.columns) {
+      if (options.warn) {
+        console.warn(
+          `Deprecated perspective attribute "plugin_config" moved to "plugin_config.columns"`
+        );
+      }
+      const columns = {};
+      for (const name of Object.keys(old.plugin_config)) {
+        const column = old.plugin_config[name];
+        delete old.plugin_config[name];
+        if (typeof column.color_mode === "string") {
+          if (column.color_mode === "foreground") {
+            column.number_fg_mode = "color";
+          } else if (column.color_mode === "bar") {
+            column.number_fg_mode = "bar";
+          } else if (column.color_mode === "background") {
+            column.number_bg_mode = "color";
+          } else if (column.color_mode === "gradient") {
+            column.number_bg_mode = "gradient";
+          } else {
+            console.warn(`Unknown color_mode ${column.color_mode}`);
+          }
+          delete column["color_mode"];
+          if (options.warn) {
+            console.warn(
+              `Deprecated perspective attribute "color_mode" renamed "number_bg_mode"`
+            );
+          }
+        }
+        columns[name] = column;
+      }
+      old.plugin_config.columns = columns;
+      if (options.replace_defaults) {
+        old.plugin_config.editable = false;
+        old.plugin_config.scroll_lock = true;
+      }
+    }
+    for (const name of Object.keys(old.plugin_config.columns)) {
+      const column = old.plugin_config.columns[name];
+      if (typeof column.number_color_mode === "string") {
+        if (column.number_color_mode === "foreground") {
+          column.number_fg_mode = "color";
+        } else if (column.number_color_mode === "bar") {
+          column.number_fg_mode = "bar";
+        } else if (column.number_color_mode === "background") {
+          column.number_bg_mode = "color";
+        } else if (column.number_color_mode === "gradient") {
+          column.number_bg_mode = "gradient";
+        }
+        delete column["number_color_mode"];
+        if (options.warn) {
+          console.warn(
+            `Deprecated perspective attribute "number_color_mode" renamed "number_bg_mode"`
+          );
+        }
+      }
+      if (column.gradient !== void 0) {
+        if (column.number_bg_mode === "gradient") {
+          column.bg_gradient = column.gradient;
+        } else if (column.number_fg_mode === "bar") {
+          column.fg_gradient = column.gradient;
+        }
+        delete column["gradient"];
+        if (options.warn) {
+          console.warn(
+            `Deprecated perspective attribute "gradient" renamed "bg_gradient"`
+          );
+        }
+      }
+      if (column.pos_color !== void 0) {
+        if (column.number_bg_mode !== void 0) {
+          column.pos_bg_color = column.pos_color;
+        } else if (column.number_fg_mode !== void 0) {
+          column.pos_fg_color = column.pos_color;
+        }
+        delete column["pos_color"];
+        if (options.warn) {
+          console.warn(
+            `Deprecated perspective attribute "pos_color" renamed "pos_bg_color"`
+          );
+        }
+      }
+      if (column.neg_color !== void 0) {
+        if (column.number_bg_mode !== void 0) {
+          column.neg_bg_color = column.neg_color;
+        } else if (column.number_fg_mode !== void 0) {
+          column.neg_fg_color = column.neg_color;
+        }
+        delete column["neg_color"];
+        if (options.warn) {
+          console.warn(
+            `Deprecated perspective attribute "neg_color" renamed "neg_bg_color"`
+          );
+        }
+      }
+    }
+  }
+  return old;
+}
+function migrate_attributes_viewer(old, options) {
+  const ATTRIBUTES = [
+    "editable",
+    "selectable",
+    "name",
+    "table",
+    "master",
+    "linked"
+  ];
+  for (const attr of ATTRIBUTES) {
+    if (attr in old) {
+      delete old[attr];
+      if (options.warn) {
+        console.warn(
+          `Deprecated perspective attribute "${attr}" removed`
+        );
+      }
+    }
+  }
+  return old;
+}
+function migrate_attributes_workspace(old, options) {
+  const ATTRIBUTES = [
+    "editable",
+    "selectable",
+    "name",
+    "table",
+    "master",
+    "linked"
+  ];
+  for (const attr of ATTRIBUTES) {
+    if (attr in old && old[attr] === null) {
+      delete old[attr];
+      if (options.warn) {
+        console.warn(
+          `Deprecated perspective attribute "${attr}" removed`
+        );
+      }
+    }
+  }
+  return old;
+}
+function migrate_name_title_workspace(old, options) {
+  if ("name" in old) {
+    if ("title" in old && old.title !== void 0) {
+      old.title = old["name"];
+      if (options.warn) {
+        console.warn(`"name" conflicts with "title"`);
+      }
+    }
+    delete old["name"];
+    if (options.warn) {
+      console.warn(`"name" unified with "title"`);
+    }
+  }
+  return old;
+}
 //# sourceMappingURL=migrate.js.map

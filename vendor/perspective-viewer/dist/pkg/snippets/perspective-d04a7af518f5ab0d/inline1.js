@@ -1,1 +1,1 @@
-export const ResizeObserver = window.ResizeObserver
+export const ClipboardItem = window.ClipboardItem
